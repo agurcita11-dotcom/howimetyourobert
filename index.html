@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>How I Met You Robert</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+  --accent:#d8b77a;
+  --accent-strong:#f2d9a4;
+  --text:#f8f2e9;
+  --muted:#cdbfae;
+  --panel:rgba(255,255,255,.07);
+  --panel-strong:rgba(255,255,255,.12);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  min-height:100vh;
+  padding:24px 24px 48px;
+  color:var(--text);
+  overflow-x:hidden;
+  overflow-y:auto;
+  position:relative;
+  background:
+    radial-gradient(circle at top left, rgba(199,164,107,.16), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(231,201,143,.1), transparent 32%),
+    linear-gradient(135deg, #0d0c0b 0%, #14110e 45%, #060606 100%);
+  animation:fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn{
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page{
+  width:min(100%,1120px);
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  gap:24px;
+}
+
+.hero{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  padding:clamp(18px,3vw,24px);
+  background:linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:24px;
+  box-shadow:0 16px 45px rgba(0,0,0,.25);
+}
+
+.hero-copy{
+  color:var(--muted);
+  margin-top:8px;
+  max-width:560px;
+  line-height:1.6;
+}
+
+.stats{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+}
+
+.stat-card{
+  min-width:140px;
+  padding:12px 14px;
+  border-radius:16px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+}
+
+.stat-card span{
+  display:block;
+  font-size:.72rem;
+  text-transform:uppercase;
+  letter-spacing:1.2px;
+  color:#e9ddc4;
+  margin-bottom:4px;
+}
+
+.stat-card strong{
+  font-size:1.05rem;
+  color:var(--accent-strong);
+}
+
+.status-message{
+  padding:12px 14px;
+  border-radius:14px;
+  background:rgba(199,164,107,.12);
+  border:1px solid rgba(199,164,107,.25);
+  color:#f7e5b8;
+  font-size:.95rem;
+}
+
+.reset-btn{
+  margin-top:12px;
+  padding:10px 14px;
+  border:none;
+  border-radius:999px;
+  background:linear-gradient(135deg, #8e5e2b, #b07e2f);
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  transition:transform .2s ease, box-shadow .2s ease;
+  box-shadow:0 8px 20px rgba(199,164,107,.18);
+}
+
+.reset-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 24px rgba(199,164,107,.28);
+}
+
+.confetti-piece{
+  position:fixed;
+  width:10px;
+  height:16px;
+  top:-20px;
+  z-index:999;
+  opacity:0.95;
+  animation:fall 1.2s linear forwards;
+}
+
+@keyframes fall{
+  0% { transform: translate3d(0,0,0) rotate(0deg); opacity:1; }
+  100% { transform: translate3d(var(--tx), 100vh, 0) rotate(720deg); opacity:0; }
+}
+
+body::before,
+body::after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  filter:blur(140px);
+  opacity:.45;
+  pointer-events:none;
+}
+
+body::before{
+  width:520px;
+  height:520px;
+  background:rgba(199,164,107,.12);
+  top:-220px;
+  left:-140px;
+}
+
+body::after{
+  width:380px;
+  height:380px;
+  background:rgba(255,255,255,.05);
+  bottom:-140px;
+  right:-90px;
+}
+
+.container{
+  position:relative;
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:36px;
+  padding:clamp(26px,4vw,48px);
+  background:linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:30px;
+  box-shadow:0 24px 80px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.12);
+}
+
+.participants-section{
+  width:100%;
+  padding:6px 0 4px;
+}
+
+.participants-title{
+  font-size:1.25rem;
+  font-weight:700;
+  color:var(--accent-strong);
+  margin-bottom:14px;
+  letter-spacing:0.02em;
+}
+
+.participants{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+}
+
+.participant-card{
+  background:linear-gradient(145deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 12px 35px rgba(0,0,0,.25);
+  transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+  animation:cardEnter 0.6s ease both;
+}
+
+.participant-card:hover{
+  transform:translateY(-6px);
+  border-color:rgba(199,164,107,.4);
+  box-shadow:0 18px 40px rgba(0,0,0,.32);
+}
+
+@keyframes cardEnter{
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.participant-card .tag{
+  display:inline-block;
+  margin-bottom:8px;
+  font-size:.72rem;
+  letter-spacing:1.25px;
+  text-transform:uppercase;
+  color:#f7e5b8;
+}
+
+.participant-card h3{
+  font-size:1.08rem;
+  color:var(--accent-strong);
+  margin-bottom:6px;
+}
+
+.participant-card img{
+  width:auto;
+  max-width:100%;
+  height:auto;
+  max-height:220px;
+  display:block;
+  margin:0 auto 12px;
+  border-radius:14px;
+  border:1px solid rgba(199,164,107,.22);
+  object-fit:contain;
+}
+
+.participant-card p{
+  color:var(--muted);
+  font-size:.94rem;
+  line-height:1.6;
+}
+
+.easter-egg{
+  margin-top:10px;
+  padding:8px 10px;
+  border-radius:10px;
+  background:rgba(255,255,255,.05);
+  border:1px dashed rgba(199,164,107,.26);
+  color:#f7e5b8;
+  font-size:.82rem;
+  font-style:italic;
+  opacity:0;
+  transform:translateY(6px);
+  transition:all .35s ease;
+  pointer-events:none;
+}
+
+.participant-card:hover .easter-egg{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.participant-card .vote-btn{
+  margin-top:12px;
+  width:100%;
+  padding:10px 12px;
+  border:none;
+  border-radius:999px;
+  background:linear-gradient(135deg, var(--accent), #b07e2f);
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  transition:transform .2s ease, box-shadow .2s ease, filter .2s ease;
+  box-shadow:0 8px 20px rgba(199,164,107,.18);
+}
+
+.participant-card .vote-btn:hover{
+  transform:translateY(-2px) scale(1.01);
+  box-shadow:0 10px 24px rgba(199,164,107,.28);
+  filter:brightness(1.05);
+}
+
+.vote-section{
+  width:100%;
+  padding:6px 0 8px;
+}
+
+.vote-section h2{
+  font-size:1.18rem;
+  color:var(--accent-strong);
+  margin-bottom:8px;
+}
+
+.vote-section p{
+  color:var(--muted);
+  margin-bottom:16px;
+}
+
+.results-panel{
+  display:grid;
+  grid-template-columns:280px 1fr;
+  gap:18px;
+  align-items:center;
+  background:linear-gradient(145deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 12px 35px rgba(0,0,0,.25);
+}
+
+.pie-chart{
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  margin:0 auto;
+  position:relative;
+  box-shadow:inset 0 0 0 10px rgba(255,255,255,.04);
+  animation:pulseChart 2.2s ease-in-out infinite;
+}
+
+@keyframes pulseChart{
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.pie-chart::after{
+  content:"";
+  position:absolute;
+  inset:34px;
+  background:#111;
+  border-radius:50%;
+  box-shadow:inset 0 0 20px rgba(0,0,0,.35);
+}
+
+.results-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.result-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:rgba(255,255,255,.05);
+}
+
+.result-item strong{
+  color:var(--accent-strong);
+}
+
+.result-item span{
+  color:var(--muted);
+  font-size:.95rem;
+}
+
+.container::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:30px;
+  background:linear-gradient(120deg, rgba(199,164,107,.1), transparent 40%, rgba(255,255,255,.03));
+  pointer-events:none;
+}
+
+.left{
+  flex:1.05;
+  position:relative;
+  z-index:1;
+}
+
+.eyebrow{
+  display:inline-block;
+  padding:6px 12px;
+  margin-bottom:14px;
+  border-radius:999px;
+  background:rgba(199,164,107,.14);
+  border:1px solid rgba(199,164,107,.28);
+  color:#f7e5b8;
+  font-size:.78rem;
+  font-weight:600;
+  letter-spacing:1.3px;
+  text-transform:uppercase;
+}
+
+h1{
+  font-size:clamp(2.15rem,4vw,3.5rem);
+  color:var(--accent-strong);
+  margin-bottom:10px;
+  line-height:1.06;
+  letter-spacing:-0.02em;
+  text-shadow:0 0 18px rgba(231,201,143,.15);
+}
+
+.subtitle{
+  font-size:1.15rem;
+  margin-bottom:6px;
+  color:#f9f2e8;
+  font-weight:500;
+  text-shadow:0 1px 2px rgba(0,0,0,.2);
+}
+
+.note{
+  color:#d8cdbd;
+  font-size:.95rem;
+  text-shadow:0 1px 1px rgba(0,0,0,.2);
+  margin-bottom:26px;
+  max-width:520px;
+}
+
+.countdown{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(92px,1fr));
+  gap:14px;
+  max-width:560px;
+}
+
+.box{
+  min-height:112px;
+  padding:14px;
+  background:linear-gradient(145deg, rgba(20,20,20,.95), rgba(10,10,10,.92));
+  border:1px solid rgba(199,164,107,.25);
+  border-radius:18px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  box-shadow:0 10px 28px rgba(0,0,0,.3);
+  transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  animation:floatUp 0.8s ease both;
+}
+
+.box:hover{
+  transform:translateY(-5px);
+  border-color:var(--accent);
+  box-shadow:0 14px 34px rgba(199,164,107,.12);
+}
+
+@keyframes floatUp{
+  from { opacity:0; transform: translateY(12px); }
+  to { opacity:1; transform: translateY(0); }
+}
+
+.number{
+  font-size:clamp(1.8rem,2.4vw,2.3rem);
+  font-weight:700;
+  color:#fff;
+}
+
+.label{
+  margin-top:6px;
+  font-size:.76rem;
+  color:#e9ddc4;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+}
+
+.image{
+  flex:0.9;
+  display:flex;
+  justify-content:center;
+  position:relative;
+  z-index:1;
+}
+
+.image img{
+  width:min(100%,360px);
+  aspect-ratio:1/1;
+  object-fit:cover;
+  object-position:center 56%;
+  border-radius:24px;
+  border:2px solid rgba(199,164,107,.35);
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+}
+
+@media(max-width:900px){
+  .container{
+    flex-direction:column;
+    text-align:center;
+  }
+
+  .left{
+    padding-right:0;
+  }
+
+  .note{
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  .countdown{
+    grid-template-columns:repeat(2,minmax(120px,1fr));
+    margin:0 auto;
+  }
+
+  .image img{
+    width:280px;
+  }
+}
+
+@media(max-width:560px){
+  body{
+    padding:16px;
+  }
+
+  .container{
+    padding:22px;
+  }
+
+  .countdown{
+    grid-template-columns:repeat(2,minmax(100px,1fr));
+  }
+
+  .box{
+    min-height:100px;
+  }
+}
+
+@media(max-width:700px){
+  .participants{
+    grid-template-columns:1fr;
+  }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+<section class="hero">
+  <div>
+    <div class="eyebrow">Competencia en marcha</div>
+    <h1>How I Met You Robert</h1>
+    <p class="hero-copy">Participa, vota y sigue la emoción de esta competencia en tiempo real.</p>
+  </div>
+  <div class="stats">
+    <div class="stat-card">
+      <span>Total de votos</span>
+      <strong id="totalVotes">0</strong>
+    </div>
+    <div class="stat-card">
+      <span>Ganador actual</span>
+      <strong id="leaderName">—</strong>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+
+<div class="left">
+
+<div class="eyebrow">Próximamente</div>
+
+<h1>How I Met You Robert</h1>
+
+<p class="subtitle">
+La moledera inicia en...
+</p>
+
+<p class="note">Un momento inminente, que marcará nuestra historia con elegancia y devoción.</p>
+
+<div class="countdown">
+
+<div class="box">
+<div id="days" class="number">00</div>
+<div class="label">DÍAS</div>
+</div>
+
+<div class="box">
+<div id="hours" class="number">00</div>
+<div class="label">HORAS</div>
+</div>
+
+<div class="box">
+<div id="minutes" class="number">00</div>
+<div class="label">MINUTOS</div>
+</div>
+
+<div class="box">
+<div id="seconds" class="number">00</div>
+<div class="label">SEGUNDOS</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="image">
+<img src="robert.png" alt="Robert">
+</div>
+
+</div>
+
+<section class="participants-section">
+  <div class="participants-title">Participantes de la competencia</div>
+  <div class="participants">
+    <article class="participant-card">
+      <span class="tag">Competidor</span>
+      <img src="agurcia.png" alt="César Agurcia">
+      <h3>César Agurcia</h3>
+      <p>“La vida es muy corta para estar serios todo el tiempo. Si no te sabes reír de ti mismo, llámame... Yo me puedo reír de ti.”</p>
+      <button class="vote-btn" data-name="César Agurcia">Votar por César</button>
+    </article>
+    <article class="participant-card">
+      <span class="tag">Competidor</span>
+      <img src="bern.png" alt="Bernardo Izaguirre">
+      <h3>Bernardo Izaguirre</h3>
+      <p>“Todos son pendejos menos yo.”</p>
+      <button class="vote-btn" data-name="Bernardo Izaguirre">Votar por Bernardo</button>
+    </article>
+    <article class="participant-card">
+      <span class="tag">Competidor</span>
+      <img src="vanegas.png" alt="Carlos Vanegas">
+      <h3>Carlos Vanegas</h3>
+      <p>“Si vos lo decís, yo te creo”</p>
+      <button class="vote-btn" data-name="Carlos Vanegas">Votar por Carlos</button>
+    </article>
+    <article class="participant-card">
+      <span class="tag">Competidor</span>
+      <img src="rocha.png" alt="Roberto Rocha">
+      <h3>Roberto Rocha</h3>
+      <p>“Ustedes no son mis amigos (amigos)”</p>
+      <button class="vote-btn" data-name="Roberto Rocha">Votar por Roberto</button>
+    </article>
+  </div>
+</section>
+
+<section class="vote-section">
+  <h2>Vota por el ganador</h2>
+  <p>Elige a tu favorito y observa cómo van los resultados.</p>
+  <div id="statusMessage" class="status-message">Aún no hay votos, la competencia está por arrancar.</div>
+  <button id="resetVotes" class="reset-btn">Reiniciar votos</button>
+  <div class="results-panel">
+    <div class="pie-chart" id="pieChart"></div>
+    <div class="results-list" id="resultsList"></div>
+  </div>
+</section>
+
+</div>
+
+<script>
+
+const target = new Date("2026-07-01T00:00:00").getTime();
+
+function updateCountdown(){
+
+const now = new Date().getTime();
+
+const distance = target - now;
+
+if(distance<=0){
+
+document.querySelector(".subtitle").innerHTML="¡La moledera ha comenzado!";
+
+return;
+
+}
+
+const days = Math.floor(distance/(1000*60*60*24));
+
+const hours = Math.floor((distance%(1000*60*60*24))/(1000*60*60));
+
+const minutes = Math.floor((distance%(1000*60*60))/(1000*60));
+
+const seconds = Math.floor((distance%(1000*60))/1000);
+
+document.getElementById("days").innerHTML=days;
+document.getElementById("hours").innerHTML=hours;
+document.getElementById("minutes").innerHTML=minutes;
+document.getElementById("seconds").innerHTML=seconds;
+
+}
+
+const voteStorageKey = "competencia-votos";
+const participants = [
+  { name: "César Agurcia", color: "#f4c96d" },
+  { name: "Bernardo Izaguirre", color: "#d68c5a" },
+  { name: "Carlos Vanegas", color: "#8d6a4d" },
+  { name: "Roberto Rocha", color: "#f2e0b0" }
+];
+
+let votes = JSON.parse(localStorage.getItem(voteStorageKey) || "{}");
+
+participants.forEach((participant) => {
+  if (votes[participant.name] === undefined) votes[participant.name] = 0;
+});
+
+localStorage.setItem(voteStorageKey, JSON.stringify(votes));
+
+function launchConfetti(){
+  const colors = ["#f4c96d", "#d68c5a", "#f2e0b0", "#ffffff"];
+  for (let i = 0; i < 18; i++) {
+    const piece = document.createElement("span");
+    piece.className = "confetti-piece";
+    piece.style.left = Math.random() * 100 + "vw";
+    piece.style.background = colors[i % colors.length];
+    piece.style.setProperty("--tx", (Math.random() - 0.5) * 180 + "px");
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 1300);
+  }
+}
+
+function updateResults(){
+  const total = participants.reduce((sum, participant) => sum + votes[participant.name], 0);
+  const pieChart = document.getElementById("pieChart");
+  const resultsList = document.getElementById("resultsList");
+  const totalVotesEl = document.getElementById("totalVotes");
+  const leaderNameEl = document.getElementById("leaderName");
+  const statusMessageEl = document.getElementById("statusMessage");
+
+  let start = 0;
+  const segments = participants.map((participant) => {
+    const value = total === 0 ? 0 : (votes[participant.name] / total) * 100;
+    const end = start + value;
+    const segment = `${participant.color} ${start.toFixed(2)}% ${end.toFixed(2)}%`;
+    start = end;
+    return segment;
+  });
+
+  pieChart.style.background = `conic-gradient(${segments.join(", ")})`;
+
+  resultsList.innerHTML = participants.map((participant) => {
+    const count = votes[participant.name];
+    const percent = total === 0 ? 0 : Math.round((count / total) * 100);
+    return `<div class="result-item"><strong>${participant.name}</strong><span>${count} votos · ${percent}%</span></div>`;
+  }).join("");
+
+  totalVotesEl.textContent = total;
+
+  const leader = [...participants].sort((a, b) => votes[b.name] - votes[a.name])[0];
+  leaderNameEl.textContent = total === 0 ? "—" : leader.name;
+
+  if (total === 0) {
+    statusMessageEl.textContent = "Aún no hay votos, la competencia está por arrancar.";
+  } else {
+    const top = participants.reduce((best, participant) => votes[participant.name] > votes[best.name] ? participant : best, participants[0]);
+    statusMessageEl.textContent = `${top.name} va liderando con ${votes[top.name]} votos.`;
+  }
+}
+
+document.querySelectorAll(".vote-btn").forEach((button) => {
+  button.addEventListener("click", () => {
+    const name = button.getAttribute("data-name");
+    votes[name] += 1;
+    localStorage.setItem(voteStorageKey, JSON.stringify(votes));
+    updateResults();
+    launchConfetti();
+  });
+});
+
+document.getElementById("resetVotes").addEventListener("click", () => {
+  participants.forEach((participant) => {
+    votes[participant.name] = 0;
+  });
+  localStorage.setItem(voteStorageKey, JSON.stringify(votes));
+  updateResults();
+});
+
+setInterval(updateCountdown,1000);
+
+updateCountdown();
+updateResults();
+
+</script>
+
+</body>
+</html>
