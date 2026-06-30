@@ -660,6 +660,11 @@ La moledera inicia en...
   </div>
 </section>
 
+<audio id="audioCesar" src="Muchachos, ahora nos volvimos a ilusionar.mp3" preload="auto"></audio>
+<audio id="audioBernardo" src="Lou Bega - Mambo No. 5 (A Little Bit of...).mp3" preload="auto"></audio>
+<audio id="audioCarlos" src="O-Zone - Dragostea Din Tei  Versuri Românești  Letra en Español  Video Oficial.mp3" preload="auto"></audio>
+<audio id="audioRoberto" src="Scatman (Ski-Ba-Bop-Ba-Dop-Bop) Sub. Español.mp3" preload="auto"></audio>
+
 </div>
 
 <script>
@@ -762,6 +767,23 @@ function updateResults(){
   }
 }
 
+const songMap = {
+  "César Agurcia": "audioCesar",
+  "Bernardo Izaguirre": "audioBernardo",
+  "Carlos Vanegas": "audioCarlos",
+  "Roberto Rocha": "audioRoberto"
+};
+
+function stopAllAudio() {
+  Object.values(songMap).forEach((id) => {
+    const audio = document.getElementById(id);
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+  });
+}
+
 document.querySelectorAll(".vote-btn").forEach((button) => {
   button.addEventListener("click", () => {
     const name = button.getAttribute("data-name");
@@ -769,6 +791,17 @@ document.querySelectorAll(".vote-btn").forEach((button) => {
     localStorage.setItem(voteStorageKey, JSON.stringify(votes));
     updateResults();
     launchConfetti();
+
+    stopAllAudio();
+    const audioId = songMap[name];
+    if (audioId) {
+      const audio = document.getElementById(audioId);
+      if (audio) {
+        audio.play().catch(() => {
+          // autoplay may be blocked until user interacts with the page
+        });
+      }
+    }
   });
 });
 
