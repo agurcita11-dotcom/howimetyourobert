@@ -653,20 +653,20 @@ La moledera inicia en...
   <h2>Vota por el ganador</h2>
   <p>Elige a tu favorito y observa cómo van los resultados.</p>
   <div id="statusMessage" class="status-message">Aún no hay votos, la competencia está por arrancar.</div>
-  <button id="resetVotes" class="reset-btn">Reiniciar votos</button>
   <div class="results-panel">
     <div class="pie-chart" id="pieChart"></div>
     <div class="results-list" id="resultsList"></div>
   </div>
 </section>
 
-<audio id="audioCesar" src="Muchachos, ahora nos volvimos a ilusionar.mp3" preload="auto"></audio>
-<audio id="audioBernardo" src="Lou Bega - Mambo No. 5 (A Little Bit of...).mp3" preload="auto"></audio>
-<audio id="audioCarlos" src="O-Zone - Dragostea Din Tei  Versuri Românești  Letra en Español  Video Oficial.mp3" preload="auto"></audio>
-<audio id="audioRoberto" src="Scatman (Ski-Ba-Bop-Ba-Dop-Bop) Sub. Español.mp3" preload="auto"></audio>
+<audio id="audioCesar" src="cesar.mp3" preload="auto"></audio>
+<audio id="audioBernardo" src="bernardo.mp3" preload="auto"></audio>
+<audio id="audioCarlos" src="carlos.mp3" preload="auto"></audio>
+<audio id="audioRoberto" src="roberto.mp3" preload="auto"></audio>
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
 <script>
 
 const target = new Date("2026-07-01T00:00:00").getTime();
@@ -700,6 +700,11 @@ document.getElementById("seconds").innerHTML=seconds;
 
 }
 
+const supabaseUrl = "https://vbieapywfvqofcwtikjh.supabase.co";
+const supabaseAnonKey = "sb_publishable__NswYfcuCXfd4nqlcSWwOw_X5hqVMv1";
+const hasSupabaseSdk = typeof window !== 'undefined' && typeof window.supabase !== 'undefined';
+const useSupabase = supabaseUrl !== "YOUR_SUPABASE_URL" && supabaseAnonKey !== "YOUR_SUPABASE_ANON_KEY" && hasSupabaseSdk;
+const supabase = useSupabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
 const voteStorageKey = "competencia-votos";
 const participants = [
   { name: "César Agurcia", color: "#f4c96d" },
@@ -708,13 +713,49 @@ const participants = [
   { name: "Roberto Rocha", color: "#f2e0b0" }
 ];
 
-let votes = JSON.parse(localStorage.getItem(voteStorageKey) || "{}");
+let votes = {};
 
-participants.forEach((participant) => {
-  if (votes[participant.name] === undefined) votes[participant.name] = 0;
-});
+async function loadVotes() {
+  if (useSupabase) {
+    const { data, error } = await supabase.from("votes").select("participant, count");
+    if (error) {
+      console.warn("Supabase load error:", error);
+      setupLocalVotes();
+      return;
+    }
+    participants.forEach((participant) => {
+      votes[participant.name] = 0;
+    });
+    data.forEach((row) => {
+      if (votes[row.participant] !== undefined) {
+        votes[row.participant] = row.count;
+      }
+    });
+  } else {
+    setupLocalVotes();
+  }
+}
 
-localStorage.setItem(voteStorageKey, JSON.stringify(votes));
+function setupLocalVotes() {
+  votes = JSON.parse(localStorage.getItem(voteStorageKey) || "{}");
+  participants.forEach((participant) => {
+    if (votes[participant.name] === undefined) votes[participant.name] = 0;
+  });
+  localStorage.setItem(voteStorageKey, JSON.stringify(votes));
+}
+
+async function saveVote(name) {
+  localStorage.setItem(voteStorageKey, JSON.stringify(votes));
+
+  if (useSupabase) {
+    const { data, error } = await supabase.from("votes").upsert({ participant: name, count: votes[name] }, { onConflict: "participant" });
+    if (error) {
+      console.warn("Supabase save error:", error);
+      return;
+    }
+    return data;
+  }
+}
 
 function launchConfetti(){
   const colors = ["#f4c96d", "#d68c5a", "#f2e0b0", "#ffffff"];
@@ -785,10 +826,10 @@ function stopAllAudio() {
 }
 
 document.querySelectorAll(".vote-btn").forEach((button) => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click", async () => {
     const name = button.getAttribute("data-name");
     votes[name] += 1;
-    localStorage.setItem(voteStorageKey, JSON.stringify(votes));
+    await saveVote(name);
     updateResults();
     launchConfetti();
 
@@ -805,18 +846,15 @@ document.querySelectorAll(".vote-btn").forEach((button) => {
   });
 });
 
-document.getElementById("resetVotes").addEventListener("click", () => {
-  participants.forEach((participant) => {
-    votes[participant.name] = 0;
-  });
-  localStorage.setItem(voteStorageKey, JSON.stringify(votes));
-  updateResults();
-});
-
 setInterval(updateCountdown,1000);
 
-updateCountdown();
-updateResults();
+async function init() {
+  await loadVotes();
+  updateResults();
+  updateCountdown();
+}
+
+init();
 
 </script>
 
